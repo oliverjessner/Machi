@@ -1,2 +1,15 @@
-# Machi
-a boring one click building game
+# machi
+
+To install dependencies:
+
+```bash
+bun install
+```
+
+To run:
+
+```bash
+bun server/index.ts
+```
+
+Open browser

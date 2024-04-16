@@ -1,0 +1,121 @@
+:root {
+    --cell-size: 72px;
+    --menu-height: 50px;
+    --small-padding: 15px;
+    --border-radius: 15px;
+
+    --border: 1px solid black;
+
+    --void-color: #24292f;
+    --cell-color: #fff;
+
+    --grass-picture: url('/assets/imgs/tiles/grass.png');
+    --dirt-picture: url('/assets/imgs/tiles/dirt.png');
+    --grass-tree1-picture: url('/assets/imgs/tiles/trees/tree1.png'), url('/assets/imgs/tiles/grass.png');
+    --grass-tree2-picture: url('/assets/imgs/tiles/trees/tree2.png'), url('/assets/imgs/tiles/grass.png');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-style: none;
+}
+
+body,
+html {
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--void-color);
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    padding: 10px;
+    font-size: 22px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+li span {
+    padding: 0 var(--small-padding);
+}
+
+main {
+    margin-top: var(--menu-height);
+    display: flex;
+    flex-direction: row;
+    width: calc(var(--playground-width) * var(--cell-size));
+    flex-wrap: wrap;
+}
+
+.cell {
+    height: var(--cell-size);
+    width: var(--cell-size);
+    border: var(--border);
+    text-align: center;
+    line-height: var(--cell-size);
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--cell-color);
+}
+
+.dirt {
+    background-image: var(--dirt-picture);
+}
+
+.grass {
+    background-image: var(--grass-picture);
+}
+
+.grass-tree1 {
+    background-image: var(--grass-tree1-picture);
+}
+
+.grass-tree2 {
+    background-image: var(--grass-tree2-picture);
+}
+
+.river {
+    background-image: var(--river);
+}
+
+.cell:hover {
+    color: #f0f0f0;
+    border-radius: var(--border-radius);
+}
+
+.hidden {
+    display: none;
+}
+
+.info {
+    position: fixed;
+    max-width: 500px;
+    top: calc(50vh - 100px);
+    left: calc(50vw - 250px);
+    font-size: 60px;
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(0);
+    padding: var(--small-padding);
+    border-radius: var(--border-radius);
+    border: var(--border);
+    user-select: none;
+}
+
+.grow {
+    transition: all 0.35s ease-in-out;
+    transform: scale(1);
+}
+
+.shrink {
+    transition: all 0.5s ease-out;
+    transform: scale(0);
+}
