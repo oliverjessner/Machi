@@ -1,17 +1,17 @@
-const recoursesEmojisData = ['🕣', '👨‍👩‍👧‍👦', '🌱', '🌲', '🪨', '💧', '🍔', '💎'];
-const recoursesData = ['rounds', 'population', 'seeds', 'wood', 'stone', 'water', 'food', 'diamonds'];
+const recoursesEmojisData = ['👨‍👩‍👧‍👦', '🌱', '🌲', '🪨', '💧', '🍔', '💎'];
+const recoursesData = ['population', 'seeds', 'wood', 'stone', 'water', 'food', 'diamonds'];
 const recoursesDOM = document.querySelector('header nav ul');
 const fallBackRecourses = { rounds: 0, population: 0, seeds: 0, wood: 0, stone: 0, water: 0, food: 0, diamonds: 0 };
 export class Recourses {
-    populationDOM;
-    waterDOM;
-    diamondsDOM;
-    foodDOM;
-    woodDOM;
-    stoneDOM;
-    seedsDOM;
-    roundsDOM;
-    constructor(recs = fallBackRecourses) {
+    populationDOM = null;
+    waterDOM = null;
+    diamondsDOM = null;
+    foodDOM = null;
+    woodDOM = null;
+    stoneDOM = null;
+    seedsDOM = null;
+    roundsDOM = null;
+    renderRecourseMenu(recs = fallBackRecourses) {
         const recsDir = Object.entries(recs);
         const recoursesDOMElements = recoursesData.map((recourse, i) => {
             const li = document.createElement('li');
@@ -33,9 +33,17 @@ export class Recourses {
         this.woodDOM = document.querySelector('#wood span');
         this.stoneDOM = document.querySelector('#stone span');
         this.seedsDOM = document.querySelector('#seeds span');
-        this.roundsDOM = document.querySelector('#rounds span');
     }
     renderRecourses(rounds = 0) {
+        if (this.populationDOM === null ||
+            this.waterDOM === null ||
+            this.diamondsDOM === null ||
+            this.foodDOM === null ||
+            this.woodDOM === null ||
+            this.stoneDOM === null ||
+            this.seedsDOM === null) {
+            return;
+        }
         this.populationDOM.textContent = this.population + '';
         this.waterDOM.textContent = this.water + '';
         this.diamondsDOM.textContent = this.diamonds + '';
@@ -43,7 +51,6 @@ export class Recourses {
         this.woodDOM.textContent = this.wood + '';
         this.stoneDOM.textContent = this.stone + '';
         this.seedsDOM.textContent = this.seeds + '';
-        this.roundsDOM.textContent = rounds + '';
     }
     subtract(recourses) {
         recourses.forEach(rec => {

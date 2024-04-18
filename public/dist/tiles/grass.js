@@ -2,7 +2,6 @@ import Dirt from './dirt.js';
 export default class Grass extends Dirt {
     hasTree = false;
     hasStone = false;
-    building = 'none';
     isEmpty = true;
     constructor(cellNr, row, column, dom) {
         super(cellNr, row, column, dom);
@@ -50,7 +49,6 @@ export default class Grass extends Dirt {
     addBuilding(building) {
         const style = getComputedStyle(this.dom).backgroundImage;
         this.isEmpty = false;
-        this.building = building;
         this.dom.style.backgroundImage = `url(/assets/imgs/tiles/building/${building}.png),url(/assets/imgs/tiles/grass.png)`;
     }
 }

@@ -1,4 +1,8 @@
-import { RecoursesType, RecoursesEmojisType } from './recourses.js';
+import { RecoursesType, RecoursesEmojisType, Recourses } from './recourses.js';
+import Building from './buildings/building.js';
+import buildingFactory from './buildings/factory.js';
+import Grass from './tiles/grass.js';
+
 export type BuildingName = 'tent' | 'ranger' | 'house' | 'spring';
 export type BuildingNeed = { name: RecoursesType; amount: number; emoji: RecoursesEmojisType };
 export type BuildingMenuItem = {
@@ -9,6 +13,7 @@ export type BuildingMenuItem = {
 };
 
 export class BuildingMenu {
+    private activeBuildings: Building[] = [];
     private buildingMenuDOM = document.querySelector('footer') as HTMLElement;
     private buildingMenuItems: HTMLElement[] = [];
     private buildingMenuItemsData: BuildingMenuItem[] = [
@@ -122,5 +127,31 @@ export class BuildingMenu {
 
     public costOfNextBuilding(): BuildingMenuItem {
         return this.activeBuilding as BuildingMenuItem;
+    }
+
+    public addBuilding(buildingName: BuildingName, tile: Grass) {
+        const building = buildingFactory(buildingName, tile.cellNr);
+
+        this.activeBuildings.push(building);
+        tile.addBuilding(buildingName);
+        new Audio('/assets/audio/build.wav').play();
+    }
+
+    public getActiveBuildings(): Building[] {
+        return this.activeBuildings;
+    }
+
+    public producAll() {
+        return this.activeBuildings.map(building => building.produce());
+    }
+
+    public createAll(recourses: Recourses, events: Object) {
+        this.activeBuildings.forEach(function (building) {
+            const valid = building.create(recourses);
+
+            if (valid && events[building.name]) {
+                return events[building.name]();
+            }
+        });
     }
 }

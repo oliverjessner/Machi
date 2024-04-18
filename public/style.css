@@ -48,23 +48,32 @@ footer {
     display: flex;
     bottom: 0;
     border: var(--border);
-    height: calc(var(--cell-size) + 40px);
+    height: calc(var(--cell-size) + 25px);
 }
 
 footer img {
-    height: calc(var(--cell-size) - 10px);
-    width: calc(var(--cell-size) - 10px);
+    height: calc(var(--cell-size) - 30px);
+    width: calc(var(--cell-size) - 30px);
 }
 
 nav ul {
     list-style-type: none;
     display: flex;
-    padding: 10px;
     font-size: 22px;
+    gap: 5px;
+}
+
+li {
+    border-right: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    padding: 9px;
 }
 
 li span {
-    padding: 0 var(--small-padding);
+    text-align: right;
+    width: 40px;
+    line-height: 32px;
 }
 
 main {
@@ -78,7 +87,6 @@ main {
 .cell {
     height: var(--cell-size);
     width: var(--cell-size);
-    border: var(--border);
     text-align: center;
     line-height: var(--cell-size);
     cursor: pointer;
@@ -108,7 +116,7 @@ main {
 
 .cell:hover {
     color: #f0f0f0;
-    border-radius: var(--border-radius);
+    opacity: 0.85;
 }
 
 .hidden {

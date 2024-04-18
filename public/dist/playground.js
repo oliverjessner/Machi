@@ -8,14 +8,16 @@ const playgroundDOM = document.querySelector('main');
 export default class Playground {
     height;
     width;
-    rounds = 0;
+    livingTrees = 0;
     grid = [[]];
     recourses;
-    constructor(width = 10, height = 10, recourses) {
+    config;
+    constructor(config, recourses) {
         this.recourses = recourses;
-        this.height = height;
-        this.width = width;
-        playgroundDOM.style.setProperty('--playground-width', width + '');
+        this.config = config;
+        this.height = config.height;
+        this.width = config.width;
+        playgroundDOM.style.setProperty('--playground-width', config.width + '');
     }
     generatePlaygroundOnDOM() {
         let columns = [];
@@ -63,8 +65,7 @@ export default class Playground {
     getRandomeCell() {
         return Math.floor(Math.random() * this.height * this.width);
     }
-    generatRandomTrees(percent) {
-        let treeCount = Math.floor(this.height * this.width * (percent / 100));
+    _generatRandomTrees(treeCount) {
         while (treeCount !== 0) {
             const cellNr = this.getRandomeCell();
             const column = Math.floor(cellNr / this.width);
@@ -75,11 +76,19 @@ export default class Playground {
                 console.log(`no cell found for tree ${cellNr}, row: ${row}, column: ${column}`);
                 continue;
             }
-            if (tile instanceof Grass && !tile.hasTree) {
+            if (tile instanceof Grass && !tile.hasTree && tile.isEmpty) {
                 tile.addTree();
                 treeCount--;
+                this.livingTrees++;
             }
         }
+    }
+    generatRandomTrees(amount, percent) {
+        if (percent) {
+            let treeCount = Math.floor(this.height * this.width * (amount / 100));
+            return this._generatRandomTrees(treeCount);
+        }
+        return this._generatRandomTrees(amount);
     }
     generateRandomStones(stones) {
         let stoneCount = Math.floor(this.height * this.width * (stones / 100));
@@ -218,16 +227,19 @@ export default class Playground {
             return;
         }
         this.recourses.seeds--;
-        this.recourses.renderRecourses(++this.rounds);
+        this.recourses.renderRecourses();
         this.grid[tile.row][tile.column] = new Grass(tile.cellNr, tile.row, tile.column, tile.dom);
     }
     build(tile, activeBuilding, buildingMenu) {
         const areEnoughRecourses = activeBuilding.needs.every(need => this.recourses[need.name] >= need.amount);
+        if (!tile.isEmpty) {
+            return;
+        }
         if (areEnoughRecourses) {
-            tile.addBuilding(activeBuilding.name);
             this.recourses.subtract(activeBuilding.needs);
             this.recourses.add(activeBuilding.gifts);
             this.recourses.renderRecourses();
+            buildingMenu.addBuilding(activeBuilding.name, tile);
         }
         else {
             const text = `Not enough recourses, need ${activeBuilding.needs
@@ -240,15 +252,18 @@ export default class Playground {
     changeLandscape(tile) {
         const needPopulationToCollectStone = 6;
         if (tile.hasTree) {
+            new Audio('/assets/audio/chop.wav').play();
             tile.removeTree();
+            this.livingTrees--;
             this.recourses.wood++;
             this.recourses.seeds++;
-            return this.recourses.renderRecourses(++this.rounds);
+            return this.recourses.renderRecourses();
         }
         if (tile.hasStone && this.recourses.population >= needPopulationToCollectStone) {
+            new Audio('/assets/audio/pickaxe.wav').play();
             tile.removeStone();
             this.recourses.stone++;
-            return this.recourses.renderRecourses(++this.rounds);
+            return this.recourses.renderRecourses();
         }
         if (tile.hasStone && this.recourses.population < needPopulationToCollectStone) {
             const text = `Not enough people, need ${needPopulationToCollectStone} people to collect a stone. Build tents & houses`;
@@ -288,5 +303,22 @@ export default class Playground {
         playgroundDOM.addEventListener('click', function (event) {
             return callback(event);
         });
+    }
+    environmentEvents() {
+        const amountOfTrees = Math.floor((this.livingTrees / (this.height * this.width)) * 100);
+        if (dev) {
+            console.log('environment events');
+            console.log(`living trees: ${this.livingTrees}: ${amountOfTrees}/${this.config.trees}%`);
+        }
+        return {
+            ranger: () => {
+                if (amountOfTrees < this.config.trees) {
+                    this.generatRandomTrees(1, false);
+                }
+            },
+            tent: () => { },
+            spring: () => { },
+            house: () => { },
+        };
     }
 }

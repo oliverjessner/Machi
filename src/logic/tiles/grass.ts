@@ -4,8 +4,7 @@ import { BuildingName } from '../buildingMenu.js';
 export default class Grass extends Dirt {
     public hasTree: boolean = false;
     public hasStone: boolean = false;
-    private building = 'none';
-    protected isEmpty: boolean = true;
+    public isEmpty: boolean = true;
 
     constructor(cellNr: number, row: number, column: number, dom: HTMLElement) {
         super(cellNr, row, column, dom);
@@ -68,7 +67,6 @@ export default class Grass extends Dirt {
         const style = getComputedStyle(this.dom).backgroundImage;
 
         this.isEmpty = false;
-        this.building = building;
         this.dom.style.backgroundImage = `url(/assets/imgs/tiles/building/${building}.png),url(/assets/imgs/tiles/grass.png)`;
     }
 }

@@ -1,4 +1,6 @@
+import buildingFactory from './buildings/factory.js';
 export class BuildingMenu {
+    activeBuildings = [];
     buildingMenuDOM = document.querySelector('footer');
     buildingMenuItems = [];
     buildingMenuItemsData = [
@@ -104,5 +106,25 @@ export class BuildingMenu {
     }
     costOfNextBuilding() {
         return this.activeBuilding;
+    }
+    addBuilding(buildingName, tile) {
+        const building = buildingFactory(buildingName, tile.cellNr);
+        this.activeBuildings.push(building);
+        tile.addBuilding(buildingName);
+        new Audio('/assets/audio/build.wav').play();
+    }
+    getActiveBuildings() {
+        return this.activeBuildings;
+    }
+    producAll() {
+        return this.activeBuildings.map(building => building.produce());
+    }
+    createAll(recourses, events) {
+        this.activeBuildings.forEach(function (building) {
+            const valid = building.create(recourses);
+            if (valid && events[building.name]) {
+                return events[building.name]();
+            }
+        });
     }
 }

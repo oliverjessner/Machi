@@ -1,7 +1,7 @@
 import { BuildingNeed } from './buildingMenu';
 
-const recoursesEmojisData = ['🕣', '👨‍👩‍👧‍👦', '🌱', '🌲', '🪨', '💧', '🍔', '💎'] as const;
-const recoursesData = ['rounds', 'population', 'seeds', 'wood', 'stone', 'water', 'food', 'diamonds'] as const;
+const recoursesEmojisData = ['👨‍👩‍👧‍👦', '🌱', '🌲', '🪨', '💧', '🍔', '💎'] as const;
+const recoursesData = ['population', 'seeds', 'wood', 'stone', 'water', 'food', 'diamonds'] as const;
 const recoursesDOM = document.querySelector('header nav ul') as HTMLElement;
 const fallBackRecourses = { rounds: 0, population: 0, seeds: 0, wood: 0, stone: 0, water: 0, food: 0, diamonds: 0 };
 
@@ -9,16 +9,16 @@ export type RecoursesType = (typeof recoursesData)[number];
 export type RecoursesEmojisType = (typeof recoursesEmojisData)[number];
 export class Recourses {
     [key: string]: any;
-    private populationDOM: HTMLElement;
-    private waterDOM: HTMLElement;
-    private diamondsDOM: HTMLElement;
-    private foodDOM: HTMLElement;
-    private woodDOM: HTMLElement;
-    private stoneDOM: HTMLElement;
-    private seedsDOM: HTMLElement;
-    private roundsDOM: HTMLElement;
+    private populationDOM: HTMLElement | null = null;
+    private waterDOM: HTMLElement | null = null;
+    private diamondsDOM: HTMLElement | null = null;
+    private foodDOM: HTMLElement | null = null;
+    private woodDOM: HTMLElement | null = null;
+    private stoneDOM: HTMLElement | null = null;
+    private seedsDOM: HTMLElement | null = null;
+    private roundsDOM: HTMLElement | null = null;
 
-    constructor(recs: typeof fallBackRecourses = fallBackRecourses) {
+    renderRecourseMenu(recs: typeof fallBackRecourses = fallBackRecourses) {
         const recsDir = Object.entries(recs);
         const recoursesDOMElements = recoursesData.map((recourse: RecoursesType, i: number) => {
             const li = document.createElement('li');
@@ -44,10 +44,20 @@ export class Recourses {
         this.woodDOM = document.querySelector('#wood span') as HTMLElement;
         this.stoneDOM = document.querySelector('#stone span') as HTMLElement;
         this.seedsDOM = document.querySelector('#seeds span') as HTMLElement;
-        this.roundsDOM = document.querySelector('#rounds span') as HTMLElement;
     }
 
     public renderRecourses(rounds = 0): void {
+        if (
+            this.populationDOM === null ||
+            this.waterDOM === null ||
+            this.diamondsDOM === null ||
+            this.foodDOM === null ||
+            this.woodDOM === null ||
+            this.stoneDOM === null ||
+            this.seedsDOM === null
+        ) {
+            return;
+        }
         this.populationDOM.textContent = this.population + '';
         this.waterDOM.textContent = this.water + '';
         this.diamondsDOM.textContent = this.diamonds + '';
@@ -55,7 +65,6 @@ export class Recourses {
         this.woodDOM.textContent = this.wood + '';
         this.stoneDOM.textContent = this.stone + '';
         this.seedsDOM.textContent = this.seeds + '';
-        this.roundsDOM.textContent = rounds + '';
     }
 
     public subtract(recourses: BuildingNeed[]): void {
