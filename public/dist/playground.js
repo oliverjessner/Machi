@@ -1,7 +1,6 @@
 import Dirt from './tiles/dirt.js';
 import Grass from './tiles/grass.js';
 import River from './tiles/river.js';
-import Recourses from './recourses.js';
 import Info from './info.js';
 const info = new Info();
 const dev = localStorage.getItem('dev') === 'true';
@@ -11,9 +10,10 @@ export default class Playground {
     rounds = 0;
     grid = [[]];
     playground;
-    recourses = new Recourses();
-    constructor(width = 10, height = 10, playground) {
+    recourses;
+    constructor(width = 10, height = 10, playground, recourses) {
         this.playground = playground;
+        this.recourses = recourses;
         this.height = height;
         this.width = width;
         this.playground.style.setProperty('--playground-width', width + '');
@@ -267,5 +267,14 @@ export default class Playground {
         if (action) {
             return action();
         }
+    }
+    isAllDirtGone() {
+        return this.grid.flat().every((tile) => tile.type !== 'dirt');
+    }
+    areAllTreesCutted() {
+        return this.grid.flat().every((tile) => tile.type !== 'grass' || !tile.hasTree);
+    }
+    areAllStonesRemoved() {
+        return this.grid.flat().every((tile) => tile.type !== 'grass' || !tile.hasStone);
     }
 }

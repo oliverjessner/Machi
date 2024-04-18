@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "tsc && cp src/index.html public/index.html && cp src/style.css public/style.css",
-        "watch": "tsc -w"
+        "watch": "tsc -w",
+        "start": "bun server/index.ts"
     },
     "devDependencies": {
         "typescript": "^5.4.5"
