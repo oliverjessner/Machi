@@ -4,19 +4,18 @@ import River from './tiles/river.js';
 import Info from './info.js';
 const info = new Info();
 const dev = localStorage.getItem('dev') === 'true';
+const playgroundDOM = document.querySelector('main');
 export default class Playground {
     height;
     width;
     rounds = 0;
     grid = [[]];
-    playground;
     recourses;
-    constructor(width = 10, height = 10, playground, recourses) {
-        this.playground = playground;
+    constructor(width = 10, height = 10, recourses) {
         this.recourses = recourses;
         this.height = height;
         this.width = width;
-        this.playground.style.setProperty('--playground-width', width + '');
+        playgroundDOM.style.setProperty('--playground-width', width + '');
     }
     generatePlaygroundOnDOM() {
         let columns = [];
@@ -28,7 +27,7 @@ export default class Playground {
             const columnNr = i % this.width;
             cell.dataset.nr = cellNr;
             cell.textContent = dev ? cellNr : '';
-            this.playground.appendChild(cell);
+            playgroundDOM.appendChild(cell);
             if (i !== 0 && i % this.width === 0) {
                 columns.push(row);
                 row = [];
@@ -51,7 +50,7 @@ export default class Playground {
                 const row = Math.floor(cellNr / this.width);
                 const column = cellNr % this.width;
                 allreadyPickedCells.push(cellNr);
-                if (this.grid[row] === undefined || this.grid[row][column] === undefined) {
+                if (this.grid[row] === undefined || this.grid[row]?.[column] === undefined) {
                     console.log(this.grid);
                     console.log(`no cell found for grass ${cellNr}, row: ${row}, column: ${column}`);
                 }
@@ -175,19 +174,19 @@ export default class Playground {
                 if (next?.column === prev?.column) {
                     level = 'vertical';
                 }
-                if (prev?.column < tile.column || next?.column < tile.column) {
-                    if (prev?.row < tile.row || next?.row < tile.row) {
+                if ((prev && prev?.column < tile.column) || (next && next?.column < tile.column)) {
+                    if ((prev && prev?.row < tile.row) || (next && next?.row < tile.row)) {
                         level = 'top_left';
                     }
-                    if (prev?.row > tile.row || next?.row > tile.row) {
+                    if ((prev && prev?.row > tile.row) || (next && next?.row > tile.row)) {
                         level = 'bottom_left';
                     }
                 }
-                if (prev?.column > tile.column || next?.column > tile.column) {
-                    if (prev?.row < tile.row || next?.row < tile.row) {
+                if ((prev && prev?.column > tile.column) || (next && next?.column > tile.column)) {
+                    if ((prev && prev?.row < tile.row) || (next && next?.row < tile.row)) {
                         level = 'top_right';
                     }
-                    if (prev?.row > tile.row || next?.row > tile.row) {
+                    if ((prev && prev?.row > tile.row) || (next && next?.row > tile.row)) {
                         level = 'bottom_right';
                     }
                 }
@@ -222,8 +221,24 @@ export default class Playground {
         this.recourses.renderRecourses(++this.rounds);
         this.grid[tile.row][tile.column] = new Grass(tile.cellNr, tile.row, tile.column, tile.dom);
     }
-    clickOnGrass(tile) {
-        const needPopulationToCollectStone = 4;
+    build(tile, activeBuilding, buildingMenu) {
+        const areEnoughRecourses = activeBuilding.needs.every(need => this.recourses[need.name] >= need.amount);
+        if (areEnoughRecourses) {
+            tile.addBuilding(activeBuilding.name);
+            this.recourses.subtract(activeBuilding.needs);
+            this.recourses.add(activeBuilding.gifts);
+            this.recourses.renderRecourses();
+        }
+        else {
+            const text = `Not enough recourses, need ${activeBuilding.needs
+                .map(need => ` ${need.amount} ${need.emoji}`)
+                .join(', ')} to build a ${activeBuilding.name}.`;
+            info.displayInfo(text);
+            buildingMenu.makeBuildingSelectInactive();
+        }
+    }
+    changeLandscape(tile) {
+        const needPopulationToCollectStone = 6;
         if (tile.hasTree) {
             tile.removeTree();
             this.recourses.wood++;
@@ -239,29 +254,21 @@ export default class Playground {
             const text = `Not enough people, need ${needPopulationToCollectStone} people to collect a stone. Build tents & houses`;
             return info.displayInfo(text);
         }
-        if (!tile.hasTree && !tile.hasStone) {
-            const costOfNextBuilding = tile.costOfNextBuilding();
-            if (costOfNextBuilding.current === 'villa') {
-                const text = 'You have reached the maximum building level';
-                return info.displayInfo(text);
-            }
-            if (this.recourses.wood >= costOfNextBuilding.wood) {
-                tile.addBuilding(costOfNextBuilding.name);
-                this.recourses.wood -= 5;
-                this.recourses.population += costOfNextBuilding.population;
-                this.recourses.renderRecourses(++this.rounds);
-            }
-            else {
-                const text = `Not enough wood, need ${costOfNextBuilding.wood} wood to build a ${costOfNextBuilding.name}. Cut Trees`;
-                info.displayInfo(text);
-            }
+    }
+    clickOnGrass(tile, buildingMenu) {
+        const activeBuilding = buildingMenu.getActiveBuilding();
+        if (!tile.hasTree && !tile.hasStone && activeBuilding) {
+            return this.build(tile, activeBuilding, buildingMenu);
+        }
+        else {
+            return this.changeLandscape(tile);
         }
     }
-    clickOnTile(cellNr) {
+    clickOnTile(cellNr, buildingMenu) {
         const tile = this.getTile(cellNr);
         const clickAction = Object.freeze({
             dirt: () => this.convertDirtnessToGrass(tile),
-            grass: () => this.clickOnGrass(tile),
+            grass: () => this.clickOnGrass(tile, buildingMenu),
         });
         const action = clickAction[tile.type];
         if (action) {
@@ -276,5 +283,10 @@ export default class Playground {
     }
     areAllStonesRemoved() {
         return this.grid.flat().every((tile) => tile.type !== 'grass' || !tile.hasStone);
+    }
+    click(callback) {
+        playgroundDOM.addEventListener('click', function (event) {
+            return callback(event);
+        });
     }
 }

@@ -53,16 +53,4 @@ export default class Grass extends Dirt {
         this.building = building;
         this.dom.style.backgroundImage = `url(/assets/imgs/tiles/building/${building}.png),url(/assets/imgs/tiles/grass.png)`;
     }
-    costOfNextBuilding() {
-        if (this.building === 'tent') {
-            return { wood: 8, name: 'house', current: 'tent', population: 3 };
-        }
-        if (this.building === 'house') {
-            return { wood: 16, name: 'villa', current: 'house', population: 5 };
-        }
-        if (this.building === 'villa') {
-            return { wood: 0, name: 'villa', current: 'villa', population: 0 };
-        }
-        return { wood: 5, name: 'tent', current: 'none', population: 1 };
-    }
 }

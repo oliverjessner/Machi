@@ -1,5 +1,5 @@
 import Info from './info.js';
-import Recourses from './recourses.js';
+import { Recourses } from './recourses.js';
 import Playground from './playground.js';
 
 export default class Events {

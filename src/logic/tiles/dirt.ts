@@ -1,5 +1,5 @@
 export default class Dirt {
-    protected type: string;
+    public type: string;
     public dom: HTMLElement;
     public row: number;
     public column: number;

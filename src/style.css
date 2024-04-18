@@ -7,7 +7,9 @@
     --border: 1px solid black;
 
     --void-color: #24292f;
+    --selected-color-darker: #0a0b0c79;
     --cell-color: #fff;
+    --menu-color: #f0f0f0;
 
     --grass-picture: url('/assets/imgs/tiles/grass.png');
     --dirt-picture: url('/assets/imgs/tiles/dirt.png');
@@ -24,15 +26,34 @@
 
 body,
 html {
-    height: 100vh;
+    height: calc(100vh - var(--menu-height));
     width: 100vw;
     background-color: var(--void-color);
 }
 
+footer,
 header {
+    cursor: pointer;
     position: fixed;
-    top: 0;
     width: 100vw;
+    background-color: var(--menu-color);
+}
+
+header {
+    top: 0;
+}
+
+footer {
+    text-align: center;
+    display: flex;
+    bottom: 0;
+    border: var(--border);
+    height: calc(var(--cell-size) + 40px);
+}
+
+footer img {
+    height: calc(var(--cell-size) - 10px);
+    width: calc(var(--cell-size) - 10px);
 }
 
 nav ul {
@@ -40,8 +61,6 @@ nav ul {
     display: flex;
     padding: 10px;
     font-size: 22px;
-    background-color: #f0f0f0;
-    cursor: pointer;
 }
 
 li span {
@@ -118,4 +137,21 @@ main {
 .shrink {
     transition: all 0.5s ease-out;
     transform: scale(0);
+}
+
+.building-menu-item {
+    width: 125px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    border-right: 1px solid black;
+}
+
+.building-menu-item.active {
+    color: #f0f0f0;
+    background-color: var(--void-color);
+}
+
+.building-menu-item:hover {
+    color: #f0f0f0;
+    background-color: var(--selected-color-darker);
 }
