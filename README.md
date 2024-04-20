@@ -9,7 +9,7 @@ bun install
 To run:
 
 ```bash
-bun server/index.ts
+bun start
 ```
 
 Open browser

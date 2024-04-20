@@ -1,5 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-style: none;
+    font-family: 'MedievalSharp', cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
 :root {
-    --cell-size: 72px;
+    --tile-size: 72px;
     --menu-height: 50px;
     --small-padding: 15px;
     --border-radius: 15px;
@@ -11,119 +23,113 @@
     --cell-color: #fff;
     --menu-color: #f0f0f0;
 
-    --grass-picture: url('/assets/imgs/tiles/grass.png');
-    --dirt-picture: url('/assets/imgs/tiles/dirt.png');
-    --grass-tree1-picture: url('/assets/imgs/tiles/trees/tree1.png'), url('/assets/imgs/tiles/grass.png');
-    --grass-tree2-picture: url('/assets/imgs/tiles/trees/tree2.png'), url('/assets/imgs/tiles/grass.png');
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    border-style: none;
+    --grass-picture-1: url('/assets/imgs/tiles/ground/grass-1.png');
+    --grass-picture-2: url('/assets/imgs/tiles/ground/grass-2.png');
+    --grass-picture-3: url('/assets/imgs/tiles/ground/grass-3.png');
+    --dirt-picture-1: url('/assets/imgs/tiles/ground/dirt-1.png');
+    --dirt-picture-2: url('/assets/imgs/tiles/ground/dirt-2.png');
+    --dirt-picture-3: url('/assets/imgs/tiles/ground/dirt-3.png');
 }
 
 body,
 html {
-    height: calc(100vh - var(--menu-height));
+    height: 100vh;
     width: 100vw;
     background-color: var(--void-color);
 }
 
-footer,
-header {
+body {
+    display: grid;
+    grid-template-areas:
+        'recourse-menu recourse-menu recourse-menu recourse-menu'
+        'playground playground playground side-pan'
+        'building-menu building-menu building-menu building-menu';
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 1fr 1fr auto;
+}
+
+.building-menu,
+.recourses-menu {
+    display: flex;
     cursor: pointer;
-    position: fixed;
+    user-select: none;
     width: 100vw;
     background-color: var(--menu-color);
 }
 
-header {
+.recourses-menu {
+    grid-area: recourse-menu;
+    gap: 15px;
     top: 0;
+    padding: 10px;
 }
 
-footer {
+.building-menu {
+    grid-area: building-menu;
     text-align: center;
-    display: flex;
+
     bottom: 0;
-    border: var(--border);
-    height: calc(var(--cell-size) + 25px);
+    height: calc(var(--tile-size) + 25px);
 }
 
-footer img {
-    height: calc(var(--cell-size) - 30px);
-    width: calc(var(--cell-size) - 30px);
+.building-menu img {
+    height: calc(var(--tile-size) - 30px);
+    width: calc(var(--tile-size) - 30px);
 }
 
-nav ul {
-    list-style-type: none;
-    display: flex;
-    font-size: 22px;
-    gap: 5px;
+.playground {
+    grid-area: playground;
+    max-height: calc(100vh - 138px);
+    overflow: scroll;
 }
 
-li {
-    border-right: 1px solid black;
+.playground-tiles {
     display: flex;
     flex-direction: row;
-    padding: 9px;
-}
-
-li span {
-    text-align: right;
-    width: 40px;
-    line-height: 32px;
-}
-
-main {
-    margin-top: var(--menu-height);
-    display: flex;
-    flex-direction: row;
-    width: calc(var(--playground-width) * var(--cell-size));
     flex-wrap: wrap;
+    width: calc(var(--tile-size) * var(--playground-width));
 }
 
-.cell {
-    height: var(--cell-size);
-    width: var(--cell-size);
+.tile {
+    height: var(--tile-size);
+    width: var(--tile-size);
     text-align: center;
-    line-height: var(--cell-size);
+    line-height: var(--tile-size);
     cursor: pointer;
     user-select: none;
     background-color: var(--cell-color);
 }
 
-.dirt {
-    background-image: var(--dirt-picture);
-}
-
-.grass {
-    background-image: var(--grass-picture);
-}
-
-.grass-tree1 {
-    background-image: var(--grass-tree1-picture);
-}
-
-.grass-tree2 {
-    background-image: var(--grass-tree2-picture);
-}
-
-.river {
-    background-image: var(--river);
-}
-
-.cell:hover {
-    color: #f0f0f0;
+.tile:hover {
+    color: var(--menu-color);
     opacity: 0.85;
+}
+
+.grass-1 {
+    background-image: var(--grass-picture-1);
+}
+.grass-2 {
+    background-image: var(--grass-picture-2);
+}
+.grass-3 {
+    background-image: var(--grass-picture-3);
+}
+
+.dirt-1 {
+    background-image: var(--dirt-picture-1);
+}
+.dirt-2 {
+    background-image: var(--dirt-picture-2);
+}
+.dirt-3 {
+    background-image: var(--dirt-picture-3);
 }
 
 .hidden {
     display: none;
 }
 
-.info {
+.info-popup {
     position: fixed;
     max-width: 500px;
     top: calc(50vh - 100px);
@@ -135,6 +141,12 @@ main {
     border-radius: var(--border-radius);
     border: var(--border);
     user-select: none;
+}
+
+.side-pan {
+    background-color: var(--menu-color);
+    width: 300px;
+    grid-area: side-pan;
 }
 
 .grow {
@@ -149,17 +161,20 @@ main {
 
 .building-menu-item {
     width: 125px;
-    border: 1px solid transparent;
     cursor: pointer;
     border-right: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .building-menu-item.active {
-    color: #f0f0f0;
+    color: var(--menu-color);
     background-color: var(--void-color);
 }
 
 .building-menu-item:hover {
-    color: #f0f0f0;
+    color: var(--menu-color);
     background-color: var(--selected-color-darker);
 }

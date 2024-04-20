@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+
+        "outDir": "public/dist"
+    },
+
+    "include": ["src/**/**/*"],
+    "exclude": ["node_modules", "dist"]
+}
