@@ -2,8 +2,9 @@ import { Building } from './building.js';
 
 export class Spring extends Building {
     public readonly url = 'spring.png';
+    public readonly produceNeeds: BuildingNeed[] = [];
 
-    public gift(): BuildingNeed[] {
+    public produce() {
         return [
             {
                 name: 'water',

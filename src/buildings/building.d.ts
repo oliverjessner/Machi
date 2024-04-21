@@ -1,1 +1,1 @@
-declare type BuildingName = 'tent' | 'spring' | 'ranger';
+declare type BuildingName = 'tent' | 'spring' | 'ranger' | 'farm' | 'mine';

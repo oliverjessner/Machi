@@ -26,3 +26,8 @@ playGroundDom.addEventListener('click', e => {
     playground.clickTile(tileNr, recourseCollector, buildingMenu);
     recourseMenu.render();
 });
+setInterval(() => {
+    console.log('tick');
+    playground.timerTick(recourseCollector);
+    recourseMenu.render();
+}, config.tickSpeed * 1000);

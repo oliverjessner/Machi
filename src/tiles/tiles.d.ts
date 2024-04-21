@@ -1,0 +1,1 @@
+type ItemName = 'barrel';

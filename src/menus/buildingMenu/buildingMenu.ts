@@ -19,24 +19,6 @@ const buildingMenuData: BuildingMenuItem[] = [
         ],
     },
     {
-        name: 'spring',
-        needs: [
-            { name: 'stone', amount: 3, emoji: '🪨' },
-            {
-                name: 'wood',
-                amount: 1,
-                emoji: '🌲',
-            },
-        ],
-        gifts: [
-            {
-                name: 'water',
-                amount: 1,
-                emoji: '💧',
-            },
-        ],
-    },
-    {
         name: 'ranger',
         needs: [
             { name: 'wood', amount: 3, emoji: '🌲' },
@@ -61,6 +43,61 @@ const buildingMenuData: BuildingMenuItem[] = [
             },
         ],
     },
+    {
+        name: 'spring',
+        needs: [
+            { name: 'stone', amount: 3, emoji: '🪨' },
+            {
+                name: 'wood',
+                amount: 1,
+                emoji: '🌲',
+            },
+        ],
+        gifts: [
+            {
+                name: 'water',
+                amount: 1,
+                emoji: '💧',
+            },
+        ],
+    },
+    {
+        name: 'farm',
+        needs: [
+            { name: 'wood', amount: 15, emoji: '🌲' },
+            {
+                name: 'water',
+                amount: 3,
+                emoji: '💧',
+            },
+        ],
+        gifts: [
+            {
+                name: 'food',
+                amount: 1,
+                emoji: '🍞',
+            },
+        ],
+    },
+    {
+        name: 'mine',
+        needs: [
+            { name: 'wood', amount: 15, emoji: '🌲' },
+            {
+                name: 'food',
+                amount: 1,
+                emoji: '🍞',
+            }
+        ],
+        gifts: [
+            {
+                name: 'stone',
+                amount: 1,
+                emoji: '🪨',
+            },
+        ],
+    },
+    }
 ];
 
 export class BuildingMenu extends Menu {

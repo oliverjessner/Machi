@@ -1,21 +1,20 @@
-import { Grass } from '../tiles/grass.js';
 import { Tile } from '../tiles/tile.js';
 import { Building } from './building.js';
 
-export class Ranger extends Building {
-    public readonly url = 'ranger.png';
+export class Mine extends Building {
+    public readonly url = 'mine.png';
     public readonly produceNeeds: BuildingNeed[] = [
         {
-            name: 'seeds',
+            name: 'food',
             amount: 1,
         },
     ];
 
-    public produce(tiles: Tile[][], buildingTile: Tile) {
+    public produce(tiles: Tile[][], buildingTile: Tile): any {
         const freeTile = this.getFreeTiles(tiles, buildingTile);
 
         if (freeTile) {
-            freeTile.addTree();
+            freeTile.addStone();
             return true;
         }
 

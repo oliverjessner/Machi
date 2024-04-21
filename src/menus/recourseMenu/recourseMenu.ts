@@ -1,6 +1,6 @@
 import { Menu } from '../menu.js';
 import { RecourseCollector } from '../../collectors/recourseCollector.js';
-const recoursesEmojisData: emojisData[] = ['👨‍👩‍👧‍👦', '🌱', '🌲', '🪨', '💧', '🍔', '💎'];
+const recoursesEmojisData: emojisData[] = ['👨‍👩‍👧‍👦', '🌱', '🌲', '🪨', '💧', '🍞', '🪙'];
 
 export class RecourseMenu extends Menu {
     private recourseCollector: RecourseCollector;

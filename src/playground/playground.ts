@@ -6,8 +6,10 @@ import { RecourseCollector } from '../collectors/recourseCollector.js';
 import { InfoPopUp } from '../infoPopUp/infopopup.js';
 import { NonWaterTile } from '../tiles/nonWaterTile.js';
 import { BuildingMenu } from '../menus/buildingMenu/buildingMenu.js';
+import { BuildingFactory } from '../buildings/buildingFactory.js';
 
 const infoPopUp = new InfoPopUp();
+const buildingFactory = new BuildingFactory();
 
 export class Playground {
     private dom: HTMLElement;
@@ -193,7 +195,7 @@ export class Playground {
                 }
             }
 
-            this.tilesGrid[tile.row][tile.column] = new River(tile.tileNr, tile.row, tile.column, tile.dom, level);
+            this.tilesGrid[tile.row][tile.column] = new River(tile.column, tile.row, tile.tileNr, tile.dom, level);
         });
     }
 
@@ -260,6 +262,10 @@ export class Playground {
         this.renderDirt();
         this.renderTrees(this.config.trees, true);
         this.renderStones(this.config.stone);
+
+        if (this.config.barrels > 0) {
+            this.renderBarrels(this.config.barrels);
+        }
     }
 
     private convertDirtnessToGrass(tile: Dirt, recourseCollector: RecourseCollector): void {
@@ -269,7 +275,7 @@ export class Playground {
         }
 
         recourseCollector.seeds--;
-        this.tilesGrid[tile.row][tile.column] = new Grass(tile.tileNr, tile.row, tile.column, tile.dom);
+        this.tilesGrid[tile.row][tile.column] = new Grass(tile.column, tile.row, tile.tileNr, tile.dom);
     }
 
     private mineStone(tile: NonWaterTile, recourseCollector: RecourseCollector): void {
@@ -282,12 +288,13 @@ export class Playground {
 
         tile.removeStone();
         recourseCollector.stone += 1;
+        new Audio('/assets/audio/pickaxe.wav').play();
     }
 
     private cutTree(tile: Grass, recourseCollector: RecourseCollector): void {
         tile.removeTree();
         recourseCollector.wood += 1;
-        recourseCollector.seeds += 1;
+        recourseCollector.seeds += 2;
         new Audio('/assets/audio/chop.wav').play();
     }
 
@@ -307,9 +314,41 @@ export class Playground {
             );
         }
 
-        tile.addBuilding(activeBuilding?.name);
+        tile.addBuilding(activeBuilding?.name, this.tilesGrid);
         recourseCollector.subtract(cost);
         recourseCollector.add(activeBuilding.gifts);
+        new Audio('/assets/audio/build.wav').play();
+    }
+
+    public farmPumpkin(tile: Grass, recourseCollector: RecourseCollector): void {
+        tile.removePumpkin();
+        recourseCollector.food += 1;
+        new Audio('/assets/audio/chop.wav').play();
+    }
+
+    public renderBarrels(amount: number): void {
+        for (let i = 0; i < amount; i++) {
+            const tiles = this.tilesGrid.flat();
+            const randomTile = this.getRandomTile() as NonWaterTile;
+
+            if (!randomTile || !randomTile.isEmpty || randomTile instanceof River) {
+                return this.renderBarrels(amount);
+            }
+            if (!randomTile) {
+                throw new Error(`No tile found ${randomTile} ${tiles.length}`);
+            }
+
+            randomTile.addItem('barrel');
+        }
+    }
+
+    public openItem(tile: NonWaterTile, recourseCollector: RecourseCollector): void {
+        const need = tile.removeBarrel();
+
+        infoPopUp.displayInfo(`You got \n ${need.map(need => `${need.emoji} ${need.amount}`).join(' ')}`);
+        recourseCollector.add(need);
+
+        new Audio('/assets/audio/open.wav').play();
     }
 
     public clickTile(tileNr: number, recourseCollector: RecourseCollector, buildingMenu: BuildingMenu) {
@@ -317,23 +356,69 @@ export class Playground {
         const isBuildingActive = buildingMenu.isBuildingActive();
 
         if (!tile) {
+            console.log(tileNr, tile, tile?.isEmpty, isBuildingActive);
+            console.log(this.tilesGrid.flat());
+        }
+
+        if (!tile) {
             return;
         }
         if (tile instanceof Dirt && tile.isEmpty) {
+            buildingMenu.deactivateBuilding();
             return this.convertDirtnessToGrass(tile, recourseCollector);
         }
         if (tile instanceof Grass && tile.isEmpty && isBuildingActive) {
             return this.buildBuilding(tile, buildingMenu, recourseCollector);
         }
         if (tile.recourses.includes('tree')) {
+            buildingMenu.deactivateBuilding();
             return this.cutTree(tile as Grass, recourseCollector);
         }
         if (tile.recourses.includes('stone')) {
+            buildingMenu.deactivateBuilding();
             return this.mineStone(tile as NonWaterTile, recourseCollector);
+        }
+        if (tile.recourses.includes('barrel')) {
+            buildingMenu.deactivateBuilding();
+            return this.openItem(tile as NonWaterTile, recourseCollector);
+        }
+        if (tile.recourses.includes('pumpkin')) {
+            buildingMenu.deactivateBuilding();
+            return this.farmPumpkin(tile as Grass, recourseCollector);
         }
         if (tile instanceof Grass && tile.isEmpty) {
         }
         if (tile instanceof River) {
         }
+    }
+
+    public timerTick(recourseCollector: RecourseCollector) {
+        const buildings = buildingFactory.getAll();
+        const recourses = recourseCollector.getAll();
+
+        buildings.forEach(building => {
+            const cost = building.produceNeeds;
+            const tile = this.getTile(building.tileNr) as Tile;
+            const skipCheck = cost?.length === 0;
+
+            const enoughRecourses =
+                skipCheck ||
+                cost.every(function (cost) {
+                    const recource = recourses.find(rec => rec.name === cost.name);
+                    return recource && recource.amount >= cost.amount;
+                });
+
+            if (enoughRecourses) {
+                const recs = building.produce(this.tilesGrid, tile);
+
+                if (recs) {
+                    recourseCollector.subtract(cost);
+
+                    if (recs?.length) {
+                        recourseCollector.add(recs);
+                    }
+                }
+            }
+        });
     }
 }

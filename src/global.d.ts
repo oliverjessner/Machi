@@ -1,5 +1,5 @@
-declare type RecourseName = 'population' | 'seeds' | 'wood' | 'stone' | 'water' | 'food' | 'diamonds';
-declare type emojisData = '👨‍👩‍👧‍👦' | '🌱' | '🌲' | '🪨' | '💧' | '🍔' | '💎';
+declare type RecourseName = 'population' | 'seeds' | 'wood' | 'stone' | 'water' | 'food' | 'money';
+declare type emojisData = '👨‍👩‍👧‍👦' | '🌱' | '🌲' | '🪨' | '💧' | '🍞' | '🪙';
 declare type BuildingNeed = { name: RecourseName; amount: number };
 declare interface ConfigType {
     height: number;
@@ -8,7 +8,8 @@ declare interface ConfigType {
     trees: number;
     stone: number;
     rivers: number;
-    timer: number;
+    barrels: number;
+    tickSpeed: number;
     recourses: {
         [RecourseName]: number;
     };
