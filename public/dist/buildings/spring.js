@@ -1,6 +1,6 @@
 import { Building } from './building.js';
 export class Spring extends Building {
-    url = 'spring.png';
+    urls = ['spring-1.png'];
     produceNeeds = [];
     produce() {
         return [

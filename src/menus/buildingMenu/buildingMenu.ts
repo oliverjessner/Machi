@@ -4,6 +4,7 @@ import { Menu } from '../menu.js';
 const buildingMenuData: BuildingMenuItem[] = [
     {
         name: 'tent',
+        url: 'tent-1',
         needs: [{ name: 'wood', amount: 5, emoji: '🌲' }],
         gifts: [
             {
@@ -20,6 +21,7 @@ const buildingMenuData: BuildingMenuItem[] = [
     },
     {
         name: 'ranger',
+        url: 'ranger',
         needs: [
             { name: 'wood', amount: 3, emoji: '🌲' },
             {
@@ -45,6 +47,7 @@ const buildingMenuData: BuildingMenuItem[] = [
     },
     {
         name: 'spring',
+        url: 'spring-1',
         needs: [
             { name: 'stone', amount: 3, emoji: '🪨' },
             {
@@ -63,6 +66,7 @@ const buildingMenuData: BuildingMenuItem[] = [
     },
     {
         name: 'farm',
+        url: 'farm',
         needs: [
             { name: 'wood', amount: 15, emoji: '🌲' },
             {
@@ -81,13 +85,14 @@ const buildingMenuData: BuildingMenuItem[] = [
     },
     {
         name: 'mine',
+        url: 'mine',
         needs: [
             { name: 'wood', amount: 15, emoji: '🌲' },
             {
                 name: 'food',
                 amount: 1,
                 emoji: '🍞',
-            }
+            },
         ],
         gifts: [
             {
@@ -97,7 +102,6 @@ const buildingMenuData: BuildingMenuItem[] = [
             },
         ],
     },
-    }
 ];
 
 export class BuildingMenu extends Menu {
@@ -136,7 +140,7 @@ export class BuildingMenu extends Menu {
 
             name.textContent = item.name.charAt(0).toUpperCase() + item.name.slice(1);
             cost.textContent = item.needs.map((need: BuildingNeed) => `${need.emoji} ${need.amount} `).join(' ');
-            img.src = `/assets/imgs/tiles/building/${item.name}.png`;
+            img.src = `/assets/imgs/tiles/building/${item.url}.png`;
 
             element.classList.add('building-menu-item');
             element.addEventListener('click', () => {

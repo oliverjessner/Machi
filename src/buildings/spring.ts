@@ -1,7 +1,7 @@
 import { Building } from './building.js';
 
 export class Spring extends Building {
-    public readonly url = 'spring.png';
+    public readonly urls = ['spring-1.png'];
     public readonly produceNeeds: BuildingNeed[] = [];
 
     public produce() {

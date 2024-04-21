@@ -2,7 +2,7 @@ import { Tile } from '../tiles/tile.js';
 import { Building } from './building.js';
 
 export class Mine extends Building {
-    public readonly url = 'mine.png';
+    public readonly urls = ['mine.png'];
     public readonly produceNeeds: BuildingNeed[] = [
         {
             name: 'food',

@@ -3,7 +3,7 @@ import { Tile } from '../tiles/tile.js';
 import { Building } from './building.js';
 
 export class Ranger extends Building {
-    public readonly url = 'ranger.png';
+    public readonly urls = ['ranger.png'];
     public readonly produceNeeds: BuildingNeed[] = [
         {
             name: 'seeds',

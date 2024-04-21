@@ -1,15 +1,20 @@
+import { randomFromTo } from '../random.js';
 import { Grass } from '../tiles/grass.js';
 import { Tile } from '../tiles/tile.js';
 
 export abstract class Building {
     public readonly tileNr: number;
-    abstract readonly url: string;
+    abstract urls: string[];
     abstract readonly produceNeeds: BuildingNeed[];
     abstract produce(tiles: Tile[][], buildingTile: Tile): any;
     public hasFence = false;
 
     constructor(tileNr: number) {
         this.tileNr = tileNr;
+    }
+
+    public getUrl(): string | undefined {
+        return this.urls[randomFromTo(0, this.urls.length - 1)];
     }
 
     public getFreeTiles(tiles: Tile[][], buildingTile: Tile): Grass | null {

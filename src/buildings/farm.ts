@@ -4,7 +4,7 @@ import { Tile } from '../tiles/tile.js';
 export class Farm extends Building {
     public readonly hasFence = true;
     public readonly fence = 'wood';
-    public readonly url = 'farm.png';
+    public readonly urls = ['farm.png'];
     public readonly produceNeeds: BuildingNeed[] = [
         {
             name: 'seeds',

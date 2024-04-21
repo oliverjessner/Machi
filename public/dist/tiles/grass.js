@@ -3,6 +3,7 @@ import { NonWaterTile } from './nonWaterTile.js';
 import { randomFromTo } from '../random.js';
 import { BuildingFactory } from '../buildings/buildingFactory.js';
 import { River } from './river.js';
+import { Farm } from '../buildings/farm.js';
 const buildingFactory = new BuildingFactory();
 export class Grass extends NonWaterTile {
     building = null;
@@ -98,10 +99,10 @@ export class Grass extends NonWaterTile {
     addBuilding(name, tiles) {
         const style = getComputedStyle(this.dom).backgroundImage;
         this.building = buildingFactory.generate(name, this.tileNr);
-        if (this.building.hasFence) {
-            this.addFences(tiles, this.building?.fence);
+        if (this.building.hasFence && this.building instanceof Farm) {
+            this.addFences(tiles, this.building.fence);
         }
-        this.dom.style.backgroundImage = `url(/assets/imgs/tiles/building/${this.building.url}),${style}`;
+        this.dom.style.backgroundImage = `url(/assets/imgs/tiles/building/${this.building?.getUrl()}),${style}`;
         this.isEmpty = false;
     }
     removeBuilding() {

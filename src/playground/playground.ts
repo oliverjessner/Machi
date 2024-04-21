@@ -7,6 +7,7 @@ import { InfoPopUp } from '../infoPopUp/infopopup.js';
 import { NonWaterTile } from '../tiles/nonWaterTile.js';
 import { BuildingMenu } from '../menus/buildingMenu/buildingMenu.js';
 import { BuildingFactory } from '../buildings/buildingFactory.js';
+import { randomFromTo } from '../random.js';
 
 const infoPopUp = new InfoPopUp();
 const buildingFactory = new BuildingFactory();
@@ -119,7 +120,7 @@ export class Playground {
 
     private renderRiverPart(startTile: Tile) {
         const tiles = [startTile];
-        const riverSize = Math.floor(this.height * this.width * 0.03);
+        const riverSize = randomFromTo(2, 6);
 
         for (let i = 0; i < riverSize - 1; i++) {
             const lastTile = tiles[i] as Tile;
@@ -358,10 +359,6 @@ export class Playground {
         if (!tile) {
             console.log(tileNr, tile, tile?.isEmpty, isBuildingActive);
             console.log(this.tilesGrid.flat());
-        }
-
-        if (!tile) {
-            return;
         }
         if (tile instanceof Dirt && tile.isEmpty) {
             buildingMenu.deactivateBuilding();

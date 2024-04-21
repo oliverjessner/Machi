@@ -1,6 +1,6 @@
 import { Building } from './building.js';
 export class Ranger extends Building {
-    url = 'ranger.png';
+    urls = ['ranger.png'];
     produceNeeds = [
         {
             name: 'seeds',

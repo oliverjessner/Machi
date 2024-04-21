@@ -1,9 +1,13 @@
+import { randomFromTo } from '../random.js';
 import { Grass } from '../tiles/grass.js';
 export class Building {
     tileNr;
     hasFence = false;
     constructor(tileNr) {
         this.tileNr = tileNr;
+    }
+    getUrl() {
+        return this.urls[randomFromTo(0, this.urls.length - 1)];
     }
     getFreeTiles(tiles, buildingTile) {
         const leftTop = tiles[buildingTile.row - 1]?.[buildingTile.column - 1];
